@@ -13,14 +13,27 @@ app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.set('views', 'views');
 
-app.get('/', (req, res) => {
-	res.render('index');
-});
-
 app.use(express.static('public'));
 
-app.get('/about', (req, res) => {
-	res.render('about');
+app.get('/', (req, res) => {
+	res.render('index', {
+		title: 'Главная страница',
+		isHome: true,
+	});
+});
+
+app.get('/courses', (req, res) => {
+	res.render('courses', {
+		title: 'Все курсы',
+		isCourses: true,
+	});
+});
+
+app.get('/add', (req, res) => {
+	res.render('add', {
+		title: 'Добавить курс',
+		isAdd: true,
+	});
 });
 
 const PORT = process.env.PORT || 3000;
