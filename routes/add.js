@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const router = new Router();
+const Cource = require('../models/course');
 
 router.get('/', (req, res) => {
 	res.render('add', {
@@ -9,9 +10,15 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-	console.log(req.body);
-
-	res.redirect('/courses');
+	const cource = new Cource(req.body);
+	cource
+		.save()
+		.then(() => {
+			res.redirect('/courses');
+		})
+		.catch((e) => {
+			alert('Произошла ошибка' + e);
+		});
 });
 
 module.exports = router;
