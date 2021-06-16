@@ -5,8 +5,6 @@ const homeRoute = require('./routes/home');
 const addRoute = require('./routes/add');
 const coursesRoute = require('./routes/courses');
 
-
-
 const app = express();
 
 const hbs = exphbs.create({
@@ -19,10 +17,11 @@ app.set('view engine', 'hbs');
 app.set('views', 'views');
 
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/', homeRoute)
-app.use('/add', addRoute)
-app.use('/courses', coursesRoute)
+app.use('/', homeRoute);
+app.use('/add', addRoute);
+app.use('/courses', coursesRoute);
 
 const PORT = process.env.PORT || 3000;
 
