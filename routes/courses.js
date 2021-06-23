@@ -1,10 +1,15 @@
 const { Router } = require('express');
+const Cource = require('../models/course');
 const router = new Router();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+	const courses = await Cource.getAllCourses();
+	console.log(courses);
+
 	res.render('courses', {
 		title: 'Все курсы',
 		isCourses: true,
+		courses,
 	});
 });
 
