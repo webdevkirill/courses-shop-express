@@ -14,6 +14,18 @@ class Course {
 		const courses = await Course.getAllCourses();
 		courses.push(this.dataToObj());
 
+		return Course.saveCoursesToFile(courses);
+	}
+
+	static async update(course) {
+		const courses = await Course.getAllCourses();
+		const index = courses.findIndex((c) => c.id === course.id);
+		courses[index] = course;
+
+		return Course.saveCoursesToFile(courses);
+	}
+
+	static saveCoursesToFile(courses) {
 		return new Promise((resolve, reject) => {
 			fs.writeFile(
 				path.join(__dirname, '../', 'data', 'courses.json'),
