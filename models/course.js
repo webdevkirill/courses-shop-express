@@ -32,7 +32,7 @@ class Course {
 	static getAllCourses() {
 		return new Promise((resolve, reject) => {
 			fs.readFile(
-				path.join(__dirname, '../', 'data', 'courses.json'),
+				path.join(__dirname, '../data', 'courses.json'),
 				'utf-8',
 				(err, data) => {
 					if (err) {
@@ -43,6 +43,11 @@ class Course {
 				}
 			);
 		});
+	}
+
+	static async getCourseById(id) {
+		const courses = await Course.getAllCourses();
+		return courses.find((c) => c.id === id);
 	}
 
 	dataToObj() {
