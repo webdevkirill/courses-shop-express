@@ -19,15 +19,7 @@ class Cart {
 
 		cart.price += +course.price;
 
-		return new Promise((resolve, reject) => {
-			fs.writeFile(Cart.path, JSON.stringify(cart), (err) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve();
-				}
-			});
-		});
+		return Cart.writeCartToFile(cart, false);
 	}
 
 	static async fetch() {
@@ -37,6 +29,38 @@ class Cart {
 					reject(err);
 				} else {
 					resolve(JSON.parse(content));
+				}
+			});
+		});
+	}
+
+	static async remove(id) {
+		const cart = await Cart.fetch();
+		const index = cart.courses.findIndex((c) => c.id === id);
+		const course = cart.courses[index];
+
+		if (course.count === 1) {
+			cart.courses = cart.courses.filter((c) => c.id !== id);
+		} else {
+			cart.courses[index].count--;
+		}
+
+		cart.price -= +course.price;
+
+		return Cart.writeCartToFile(cart, true);
+	}
+
+	static async writeCartToFile(cart, isCartReturned) {
+		return new Promise((resolve, reject) => {
+			fs.writeFile(Cart.path, JSON.stringify(cart), (err) => {
+				if (err) {
+					reject(err);
+				} else {
+					if (isCartReturned) {
+						resolve(cart);
+					} else {
+						resolve();
+					}
 				}
 			});
 		});
