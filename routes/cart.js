@@ -10,7 +10,8 @@ router.post('/add', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-	const cart = Cart.fetch();
+	const cart = await Cart.fetch();
+
 	res.render('cart', {
 		title: 'Корзина',
 		isCart: true,
