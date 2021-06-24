@@ -11,6 +11,7 @@ const cartRoute = require('./routes/cart');
 const ordersRoute = require('./routes/orders');
 const authRoute = require('./routes/auth');
 const varMiddleware = require('./middleware/variables');
+const userMiddleware = require('./middleware/user');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use(
 	})
 );
 app.use(varMiddleware);
+app.use(userMiddleware);
 
 app.use('/', homeRoute);
 app.use('/add', addRoute);
