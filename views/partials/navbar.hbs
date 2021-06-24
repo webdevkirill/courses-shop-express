@@ -27,6 +27,11 @@
         >
             <a href="/orders">Заказы</a>
         </li>
+        <li 
+            {{#if isLogin}} class="active" {{/if}}
+        >
+            <a href="/auth/login#signin">Вход</a>
+        </li>
       </ul>
     </div>
   </nav>
