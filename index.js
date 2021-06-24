@@ -28,16 +28,6 @@ app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.set('views', 'views');
 
-app.use(async (req, res, next) => {
-	try {
-		const user = await User.findById('60d40f878ddd1c516060953c');
-		req.user = user;
-		next();
-	} catch (e) {
-		console.error(e);
-	}
-});
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -69,19 +59,19 @@ async function start() {
 			useFindAndModify: false,
 		});
 
-		const candidate = await User.findOne();
+		// const candidate = await User.findOne();
 
-		if (!candidate) {
-			const user = new User({
-				email: 'krill.fyodorov@gmail.com',
-				name: 'krill.fyodorov',
-				cart: {
-					items: [],
-				},
-			});
+		// if (!candidate) {
+		// 	const user = new User({
+		// 		email: 'krill.fyodorov@gmail.com',
+		// 		name: 'krill.fyodorov',
+		// 		cart: {
+		// 			items: [],
+		// 		},
+		// 	});
 
-			await user.save();
-		}
+		// 	await user.save();
+		// }
 
 		app.listen(3000, () => {
 			console.log(`Сервер был запущен на порту ${PORT}`);
