@@ -49,9 +49,15 @@
 			<h1>Регистрация</h1>
 			<form action='/auth/signup' method='POST'>
 				<div class='input-field'>
+					<input name='name' id='name' type='text' class='validate' />
+					<label for='name'>Выше имя</label>
+					<span class='helper-text' data-error='Введите имя'></span>
+				</div>
+
+				<div class='input-field'>
 					<input
-						name='remail'
-						id='email'
+						name='email'
+						id='remail'
 						type='email'
 						class='validate'
 						required
@@ -80,7 +86,7 @@
 
 				<div class='input-field'>
 					<input
-						name='password'
+						name='passwordconfirm'
 						id='passwordconfirm'
 						type='password'
 						class='validate'

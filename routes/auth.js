@@ -27,4 +27,25 @@ router.post('/signin', async (req, res) => {
 	});
 });
 
+router.post('/signup', async (req, res) => {
+	try {
+		const { email, password, passwordconfirm, name } = req.body;
+		const candidate = await User.findOne({ email });
+		if (candidate) {
+			res.redirect('/auth/login#signup');
+		} else {
+			const user = new User({
+				email,
+				password,
+				name,
+				cart: { items: [] },
+			});
+			await user.save();
+			res.redirect('/auth/login#signin');
+		}
+	} catch (e) {
+		console.error(e);
+	}
+});
+
 module.exports = router;
