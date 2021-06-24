@@ -1,75 +1,29 @@
-const { v4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
+const { Schema, model } = require('mongoose');
+const Course = new Schema({
+	title: {
+		type: String,
+		required: true,
+	},
+	price: {
+		type: Number,
+		required: true,
+	},
+	img: {
+		type: String,
+		required: true,
+	},
+	userId: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+	},
+});
 
-class Course {
-	constructor({ title, price, img }) {
-		this.title = title;
-		this.price = price;
-		this.img = img;
-		this.id = v4();
-	}
+Course.method('toClient', function () {
+	const course = this.toObject();
+	course.id = course._id;
+	delete course._id;
 
-	async save() {
-		const courses = await Course.getAllCourses();
-		courses.push(this.dataToObj());
+	return course;
+});
 
-		return Course.saveCoursesToFile(courses);
-	}
-
-	static async update(course) {
-		const courses = await Course.getAllCourses();
-		const index = courses.findIndex((c) => c.id === course.id);
-		courses[index] = course;
-
-		return Course.saveCoursesToFile(courses);
-	}
-
-	static saveCoursesToFile(courses) {
-		return new Promise((resolve, reject) => {
-			fs.writeFile(
-				path.join(__dirname, '../', 'data', 'courses.json'),
-				JSON.stringify(courses),
-				(err) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve();
-					}
-				}
-			);
-		});
-	}
-
-	static getAllCourses() {
-		return new Promise((resolve, reject) => {
-			fs.readFile(
-				path.join(__dirname, '../data', 'courses.json'),
-				'utf-8',
-				(err, data) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve(JSON.parse(data));
-					}
-				}
-			);
-		});
-	}
-
-	static async getCourseById(id) {
-		const courses = await Course.getAllCourses();
-		return courses.find((c) => c.id === id);
-	}
-
-	dataToObj() {
-		return {
-			title: this.title,
-			price: this.price,
-			img: this.img,
-			id: this.id,
-		};
-	}
-}
-
-module.exports = Course;
+module.exports = model('Course', Course);

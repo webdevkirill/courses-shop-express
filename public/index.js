@@ -6,8 +6,23 @@ document.addEventListener('DOMContentLoaded', () => {
 		}).format(sum);
 	}
 
+	function transformDate(date) {
+		return new Intl.DateTimeFormat('ru-RU', {
+			day: '2-digit',
+			month: 'long',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+		}).format(new Date(date));
+	}
+
 	document.querySelectorAll('.price').forEach((node) => {
 		node.textContent = transformPruceToLocale(node.textContent);
+	});
+
+	document.querySelectorAll('.date').forEach((node) => {
+		node.textContent = transformDate(node.textContent);
 	});
 
 	const $cart = document.querySelector('.cart');
@@ -37,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         </tr>
                                     `;
 								})
-								.join();
+								.join('');
 							$cart.querySelector('tbody').innerHTML = html;
 							$cart.querySelector('.price').textContent =
 								transformPruceToLocale(cart.price);

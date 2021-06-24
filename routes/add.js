@@ -9,16 +9,22 @@ router.get('/', (req, res) => {
 	});
 });
 
-router.post('/', (req, res) => {
-	const cource = new Cource(req.body);
-	cource
-		.save()
-		.then(() => {
-			res.redirect('/courses');
-		})
-		.catch((e) => {
-			alert('Произошла ошибка' + e);
-		});
+router.post('/', async (req, res) => {
+	const { title, price, img } = req.body;
+
+	const cource = new Cource({
+		title,
+		price,
+		img,
+		userId: req.user,
+	});
+
+	try {
+		await cource.save();
+		res.redirect('/courses');
+	} catch (e) {
+		console.error('Произошла ошибка' + e);
+	}
 });
 
 module.exports = router;
