@@ -1,13 +1,16 @@
 const express = require('express');
 const path = require('path');
 const exphbs = require('express-handlebars');
+const mongoose = require('mongoose');
+const session = require('express-session');
 const homeRoute = require('./routes/home');
 const addRoute = require('./routes/add');
 const coursesRoute = require('./routes/courses');
 const cartRoute = require('./routes/cart');
 const ordersRoute = require('./routes/orders');
 const authRoute = require('./routes/auth');
-const mongoose = require('mongoose');
+const varMiddleware = require('./middleware/variables');
+
 const User = require('./models/user');
 
 const app = express();
@@ -37,6 +40,14 @@ app.use(async (req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(
+	session({
+		secret: 'secret value',
+		resave: false,
+		saveUninitialized: false,
+	})
+);
+app.use(varMiddleware);
 
 app.use('/', homeRoute);
 app.use('/add', addRoute);

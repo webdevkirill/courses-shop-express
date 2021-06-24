@@ -8,4 +8,15 @@ router.get('/login', async (req, res) => {
 	});
 });
 
+router.get('/logout', async (req, res) => {
+	req.session.destroy(() => {
+		res.redirect('/auth/login#signin');
+	});
+});
+
+router.post('/signin', async (req, res) => {
+	req.session.isAuth = true;
+	res.redirect('/');
+});
+
 module.exports = router;
