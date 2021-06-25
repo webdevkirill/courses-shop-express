@@ -7,6 +7,7 @@ const MongoStore = require('connect-mongodb-session')(session);
 const csurf = require('csurf');
 const flash = require('connect-flash');
 const helmet = require('helmet');
+const compression = require('compression');
 const homeRoute = require('./routes/home');
 const addRoute = require('./routes/add');
 const coursesRoute = require('./routes/courses');
@@ -46,6 +47,7 @@ app.use(
 		contentSecurityPolicy: false,
 	})
 );
+app.use(compression());
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
