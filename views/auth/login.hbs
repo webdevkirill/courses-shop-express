@@ -11,6 +11,9 @@
 		</div>
 		<div id='signin' class='col s6 offset-s3'>
 			<h1>Вход</h1>
+			{{#if signinerror}}
+				<p class='alert'>{{signinerror}}</p>
+			{{/if}}
 			<form action='/auth/signin' method='POST'>
 				<div class='input-field'>
 					<input
@@ -49,6 +52,9 @@
 		</div>
 		<div id='signup' class='col s6 offset-s3'>
 			<h1>Регистрация</h1>
+			{{#if signuperror}}
+				<p class='alert'>{{signuperror}}</p>
+			{{/if}}
 			<form action='/auth/signup' method='POST'>
 				<div class='input-field'>
 					<input name='name' id='name' type='text' class='validate' />

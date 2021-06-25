@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongodb-session')(session);
 const csurf = require('csurf');
+const flash = require('connect-flash');
 const homeRoute = require('./routes/home');
 const addRoute = require('./routes/add');
 const coursesRoute = require('./routes/courses');
@@ -49,6 +50,7 @@ app.use(
 );
 
 app.use(csurf());
+app.use(flash());
 app.use(varMiddleware);
 app.use(userMiddleware);
 

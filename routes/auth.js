@@ -7,6 +7,8 @@ router.get('/login', async (req, res) => {
 	res.render('auth/login', {
 		title: 'Вход',
 		isSignin: true,
+		signinerror: req.flash('signinerror'),
+		signuperror: req.flash('signuperror'),
 	});
 });
 
@@ -36,9 +38,11 @@ router.post('/signin', async (req, res) => {
 					res.redirect('/');
 				});
 			} else {
+				req.flash('signinerror', 'Пароль неверный');
 				res.redirect('/auth/login#signin');
 			}
 		} else {
+			req.flash('signinerror', 'Такого пользователя не существует');
 			res.redirect('/auth/login#signin');
 		}
 	} catch (e) {
@@ -51,6 +55,7 @@ router.post('/signup', async (req, res) => {
 		const { email, password, passwordconfirm, name } = req.body;
 		const candidate = await User.findOne({ email });
 		if (candidate) {
+			req.flash('signuperror', 'Такой email уже занят');
 			res.redirect('/auth/login#signup');
 		} else {
 			const hashPassword = await bcrypt.hash(password, 10);
