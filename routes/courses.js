@@ -1,7 +1,9 @@
 const { Router } = require('express');
+const { validationResult } = require('express-validator');
 const Course = require('../models/course');
 const router = new Router();
 const auth = require('../middleware/auth');
+const { courseValidators } = require('../utils/validators');
 
 function isCourseOwner(course, req) {
 	return course.userId.toString() === req.user._id.toString();
@@ -53,13 +55,18 @@ router.get('/:id', async (req, res) => {
 	});
 });
 
-router.post('/edit', auth, async (req, res) => {
+router.post('/edit', auth, courseValidators, async (req, res) => {
 	try {
 		const { id, title, price, img } = req.body;
+		const errors = validationResult(req);
 		const course = await Course.findById(id);
 
 		if (!isCourseOwner(course, req)) {
 			return res.redirect('/courses');
+		}
+
+		if (!errors.isEmpty()) {
+			return res.status(422).redirect(`/courses/${id}/edit?allow=true`);
 		}
 
 		course.title = title;

@@ -68,8 +68,7 @@ router.post('/signin', async (req, res) => {
 
 router.post('/signup', registerValidators, async (req, res) => {
 	try {
-		const { email, password, passwordconfirm, name } = req.body;
-		const candidate = await User.findOne({ email });
+		const { email, password, name } = req.body;
 
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
@@ -77,22 +76,17 @@ router.post('/signup', registerValidators, async (req, res) => {
 			return res.status(422).redirect('/auth/login#signup');
 		}
 
-		if (candidate) {
-			req.flash('signuperror', 'Такой email уже занят');
-			res.redirect('/auth/login#signup');
-		} else {
-			const hashPassword = await bcrypt.hash(password, 10);
-			const user = new User({
-				email,
-				password: hashPassword,
-				name,
-				cart: { items: [] },
-			});
-			await user.save();
+		const hashPassword = await bcrypt.hash(password, 10);
+		const user = new User({
+			email,
+			password: hashPassword,
+			name,
+			cart: { items: [] },
+		});
+		await user.save();
 
-			res.redirect('/auth/login#signin');
-			await transporter.sendMail(regEmail(email));
-		}
+		res.redirect('/auth/login#signin');
+		await transporter.sendMail(regEmail(email));
 	} catch (e) {
 		console.error(e);
 	}
