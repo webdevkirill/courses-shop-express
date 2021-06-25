@@ -17,8 +17,6 @@ router.get('/', auth, async (req, res) => {
 			),
 		}));
 
-		console.log(orders);
-
 		res.render('orders', {
 			isOrders: true,
 			title: 'Заказы',
@@ -42,7 +40,7 @@ router.post('/', auth, async (req, res) => {
 			},
 		}));
 
-		const order = new Order({
+		const order = await new Order({
 			user: {
 				name: req.user.name,
 				userId: req.user,
@@ -53,10 +51,7 @@ router.post('/', auth, async (req, res) => {
 		await order.save();
 		await req.user.clearCart();
 
-		res.render('orders', {
-			isOrders: true,
-			title: 'Заказы',
-		});
+		res.redirect('/orders');
 	} catch (e) {
 		console.error(e);
 	}

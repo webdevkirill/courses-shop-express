@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongodb-session')(session);
+const csurf = require('csurf');
 const homeRoute = require('./routes/home');
 const addRoute = require('./routes/add');
 const coursesRoute = require('./routes/courses');
@@ -46,6 +47,8 @@ app.use(
 		store,
 	})
 );
+
+app.use(csurf());
 app.use(varMiddleware);
 app.use(userMiddleware);
 
@@ -65,20 +68,6 @@ async function start() {
 			useUnifiedTopology: true,
 			useFindAndModify: false,
 		});
-
-		// const candidate = await User.findOne();
-
-		// if (!candidate) {
-		// 	const user = new User({
-		// 		email: 'krill.fyodorov@gmail.com',
-		// 		name: 'krill.fyodorov',
-		// 		cart: {
-		// 			items: [],
-		// 		},
-		// 	});
-
-		// 	await user.save();
-		// }
 
 		app.listen(3000, () => {
 			console.log(`Сервер был запущен на порту ${PORT}`);

@@ -5,7 +5,6 @@ const auth = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
 	const courses = await Course.find().populate('userId', 'email name');
-	console.log(courses);
 
 	res.render('courses', {
 		title: 'Все курсы',
