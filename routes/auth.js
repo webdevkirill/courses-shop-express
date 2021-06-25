@@ -4,10 +4,12 @@ const router = new Router();
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const sendgrid = require('nodemailer-sendgrid-transport');
+const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const keys = require('../keys/keys');
 const regEmail = require('../emails/registration');
 const resetEmail = require('../emails/reset');
+const { registerValidators } = require('../utils/validators');
 
 const transporter = nodemailer.createTransport(
 	sendgrid({
@@ -64,10 +66,17 @@ router.post('/signin', async (req, res) => {
 	}
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', registerValidators, async (req, res) => {
 	try {
 		const { email, password, passwordconfirm, name } = req.body;
 		const candidate = await User.findOne({ email });
+
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			req.flash('signuperror', errors.array()[0].msg);
+			return res.status(422).redirect('/auth/login#signup');
+		}
+
 		if (candidate) {
 			req.flash('signuperror', 'Такой email уже занят');
 			res.redirect('/auth/login#signup');
