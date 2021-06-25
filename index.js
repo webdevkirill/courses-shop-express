@@ -6,6 +6,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongodb-session')(session);
 const csurf = require('csurf');
 const flash = require('connect-flash');
+const helmet = require('helmet');
 const homeRoute = require('./routes/home');
 const addRoute = require('./routes/add');
 const coursesRoute = require('./routes/courses');
@@ -13,12 +14,11 @@ const cartRoute = require('./routes/cart');
 const ordersRoute = require('./routes/orders');
 const authRoute = require('./routes/auth');
 const profileRoute = require('./routes/profile');
-
 const varMiddleware = require('./middleware/variables');
 const userMiddleware = require('./middleware/user');
 const errorMiddleware = require('./middleware/error');
 const fileMiddleware = require('./middleware/file');
-const keys = require('./keys/keys');
+const keys = require('./keys');
 
 const app = express();
 
@@ -40,6 +40,12 @@ const store = new MongoStore({
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.set('views', 'views');
+
+app.use(
+	helmet({
+		contentSecurityPolicy: false,
+	})
+);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
