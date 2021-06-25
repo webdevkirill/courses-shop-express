@@ -3,26 +3,43 @@ const Course = require('../models/course');
 const router = new Router();
 const auth = require('../middleware/auth');
 
-router.get('/', async (req, res) => {
-	const courses = await Course.find().populate('userId', 'email name');
+function isCourseOwner(course, req) {
+	return course.userId.toString() === req.user._id.toString();
+}
 
-	res.render('courses', {
-		title: 'Все курсы',
-		isCourses: true,
-		courses,
-	});
+router.get('/', async (req, res) => {
+	try {
+		const courses = await Course.find().populate('userId', 'email name');
+		res.render('courses', {
+			title: 'Все курсы',
+			isCourses: true,
+			courses,
+			userId: req.user ? req.user._id.toString() : null,
+		});
+	} catch (err) {
+		console.error(err);
+	}
 });
 
 router.get('/:id/edit', auth, async (req, res) => {
 	if (!req.query.allow) {
 		return res.redirect('/');
 	}
-	const course = await Course.findById(req.params.id);
 
-	res.render('courseEdit', {
-		title: `Редактировать курс ${course.title}`,
-		course,
-	});
+	try {
+		const course = await Course.findById(req.params.id);
+
+		if (!isCourseOwner(course, req)) {
+			return res.redirect('/courses');
+		}
+
+		res.render('courseEdit', {
+			title: `Редактировать курс ${course.title}`,
+			course,
+		});
+	} catch (err) {
+		console.error(err);
+	}
 });
 
 router.get('/:id', async (req, res) => {
@@ -37,15 +54,29 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/edit', auth, async (req, res) => {
-	const { id } = req.body;
-	delete req.body.id;
-	await Course.findByIdAndUpdate(id, req.body);
-	res.redirect('/courses');
+	try {
+		const { id, title, price, img } = req.body;
+		const course = await Course.findById(id);
+
+		if (!isCourseOwner(course, req)) {
+			return res.redirect('/courses');
+		}
+
+		course.title = title;
+		course.price = price;
+		course.img = img;
+
+		await course.save();
+
+		res.redirect('/courses');
+	} catch (err) {
+		console.error(err);
+	}
 });
 
 router.post('/remove', auth, async (req, res) => {
 	try {
-		await Course.deleteOne({ _id: req.body.id });
+		await Course.deleteOne({ _id: req.body.id, userId: req.user._id });
 		res.redirect('/courses');
 	} catch (e) {
 		console.error(e);

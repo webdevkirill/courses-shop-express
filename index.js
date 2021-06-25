@@ -25,6 +25,7 @@ const hbs = exphbs.create({
 		allowProtoPropertiesByDefault: true,
 		allowProtoMethodsByDefault: true,
 	},
+	helpers: require('./utils/hbsHelpers'),
 });
 
 const store = new MongoStore({
