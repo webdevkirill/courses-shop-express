@@ -14,6 +14,7 @@ const ordersRoute = require('./routes/orders');
 const authRoute = require('./routes/auth');
 const varMiddleware = require('./middleware/variables');
 const userMiddleware = require('./middleware/user');
+const keys = require('./keys/keys');
 
 const app = express();
 
@@ -26,12 +27,9 @@ const hbs = exphbs.create({
 	},
 });
 
-const pass = 'SDfsdfSgh2268';
-const MONGODB_URI = `mongodb+srv://kirillwebdev:${pass}@cluster0.kx0fs.mongodb.net/shop`;
-
 const store = new MongoStore({
 	collection: 'sessions',
-	uri: MONGODB_URI,
+	uri: keys.MONGODB_URI,
 });
 
 app.engine('hbs', hbs.engine);
@@ -42,7 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(
 	session({
-		secret: 'secret value',
+		secret: keys.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
 		store,
@@ -65,7 +63,7 @@ const PORT = process.env.PORT || 3000;
 
 async function start() {
 	try {
-		await mongoose.connect(MONGODB_URI, {
+		await mongoose.connect(keys.MONGODB_URI, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useFindAndModify: false,
